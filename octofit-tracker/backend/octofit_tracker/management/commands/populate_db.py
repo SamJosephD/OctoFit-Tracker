@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from ...models import Team, UserProfile, Activity, Workout
@@ -16,6 +17,24 @@ class Command(BaseCommand):
         team_b, _ = Team.objects.get_or_create(
             name='Team Atlas',
             defaults={'description': 'Strength and endurance team with weekly challenges.', 'leaderboard_score': 185},
+        )
+
+        admin_user, created = User.objects.get_or_create(
+            username='sam_joseph@epam.com',
+            defaults={'email': 'sam_joseph@epam.com', 'first_name': 'Sam Joseph', 'is_staff': True},
+        )
+        if created:
+            admin_user.set_password('admin@123')
+            admin_user.save()
+
+        admin_profile, _ = UserProfile.objects.get_or_create(
+            email='sam_joseph@epam.com',
+            defaults={
+                'user': admin_user,
+                'name': 'Sam Joseph',
+                'bio': 'OctoFit admin account',
+                'role': UserProfile.ROLE_ADMIN,
+            },
         )
 
         alice, _ = UserProfile.objects.get_or_create(

@@ -8,27 +8,30 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     team = serializers.CharField(source='team.name', read_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'name', 'email', 'team', 'bio', 'joined_at']
+        fields = ['id', 'user_id', 'name', 'email', 'role', 'team', 'bio', 'joined_at']
 
 
 class ActivitySerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user = serializers.StringRelatedField(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=UserProfile.objects.all(), source='user', write_only=True)
 
     class Meta:
         model = Activity
-        fields = ['id', 'user', 'activity_type', 'duration_minutes', 'distance_km', 'timestamp', 'notes']
+        fields = ['id', 'user', 'user_id', 'activity_type', 'duration_minutes', 'distance_km', 'timestamp', 'notes']
 
 
 class WorkoutSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user = serializers.StringRelatedField(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=UserProfile.objects.all(), source='user', write_only=True)
 
     class Meta:
         model = Workout
-        fields = ['id', 'user', 'title', 'description', 'scheduled_for', 'completed']
+        fields = ['id', 'user', 'user_id', 'title', 'description', 'scheduled_for', 'completed']
 
 
 class LeaderboardSerializer(serializers.Serializer):

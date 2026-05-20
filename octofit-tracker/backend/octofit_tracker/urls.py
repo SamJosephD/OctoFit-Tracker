@@ -36,8 +36,12 @@ def api_root(request, format=None):
 
 
 urlpatterns = [
+    path('', api_root, name='root'),
     path('admin/', admin.site.urls),
     path('api/', api_root, name='api-root'),
     path('api/', include(router.urls)),
     path('api/leaderboard/', views.LeaderboardView.as_view(), name='leaderboard'),
+    path('api/auth/signup/', views.SignupView.as_view(), name='signup'),
+    path('api/auth/login/', views.LoginView.as_view(), name='login'),
+    path('api/auth/logout/', views.LogoutView.as_view(), name='logout'),
 ]

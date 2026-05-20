@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Team(models.Model):
@@ -11,8 +12,17 @@ class Team(models.Model):
 
 
 class UserProfile(models.Model):
+    ROLE_USER = 'user'
+    ROLE_ADMIN = 'admin'
+    ROLE_CHOICES = [
+        (ROLE_USER, 'User'),
+        (ROLE_ADMIN, 'Admin'),
+    ]
+
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, related_name='profile')
     name = models.CharField(max_length=120)
     email = models.EmailField(unique=True)
+    role = models.CharField(max_length=16, choices=ROLE_CHOICES, default=ROLE_USER)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name='members')
     bio = models.TextField(blank=True)
     joined_at = models.DateTimeField(auto_now_add=True)
